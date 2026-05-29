@@ -54,13 +54,14 @@ st.markdown(
         box-shadow: 0 0 8px rgba(180,138,44,0.20);
     }
     .score-badge {
-        position: absolute;
-        top: 6px; right: 8px;
+        display: inline-block;
         font-size: 11px; font-weight: 700;
         padding: 1px 7px;
+        margin-right: 6px;
         border-radius: 999px;
         background: rgba(0,0,0,0.35);
         border: 1px solid rgba(255,255,255,0.10);
+        vertical-align: middle;
     }
     .score-hot     { color: #c8f7c8; border-color: #2faa55; }
     .score-warm    { color: #f5d68a; border-color: #b48a2c; }
@@ -292,10 +293,11 @@ def render_mini_card(warrant, history, live_price, expiry, score, sig, strategy=
     st.markdown(
         f"""
         <div class="mini-card {card_cls}">
-            <span class="score-badge {badge_cls}">{score:.1f}</span>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span class="mini-title">{logo_html}{short_name}</span>
-                {head_right}
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+                <span class="mini-title" style="min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    <span class="score-badge {badge_cls}">{score:.1f}</span>{logo_html}{short_name}
+                </span>
+                <span style="flex-shrink:0;">{head_right}</span>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:baseline;">
                 <span class="mini-sub">{warrant.wkn}</span>
