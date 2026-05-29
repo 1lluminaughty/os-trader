@@ -1,0 +1,41 @@
+services:
+  os-trader:
+    build: .
+    image: os-trader:latest
+    container_name: os-trader
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      TZ: Europe/Berlin
+    # Bind-Mount: Source-Files vom Server werden live in den Container gemappt.
+    # Streamlit detected Dateiänderungen automatisch und lädt die App neu.
+    volumes:
+      - ./app.py:/app/app.py:ro
+      - ./data.py:/app/data.py:ro
+      - ./signals.py:/app/signals.py:ro
+      - ./trend_signals.py:/app/trend_signals.py:ro
+      - ./charts.py:/app/charts.py:ro
+      - ./warrants.py:/app/warrants.py:ro
+      - ./analysts.py:/app/analysts.py:ro
+    command:
+      - streamlit
+      - run
+      - app.py
+      - --server.address=0.0.0.0
+      - --server.port=8501
+      - --server.headless=true
+      - --server.runOnSave=true
+      - --server.fileWatcherType=poll
+      - --browser.gatherUsageStats=false
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
